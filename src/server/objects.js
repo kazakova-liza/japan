@@ -92,7 +92,7 @@ const objects = {
             function: invFromSlow,
             textOnProcessing: "getting inventory from slow",
             textOnCompletion: "got inventory from slow",
-            svgTransitionElementId: 'svg_105',
+            svgTransitionElementId: 'svg_75',
         },
         {
             number: 9,
@@ -116,7 +116,7 @@ const objects = {
             function: invToSlow,
             textOnProcessing: "putting slow inventory away",
             textOnCompletion: "put slow inventory away",
-            svgTransitionElementId: undefined,
+            svgTransitionElementId: 'svg_105',
         }
     ]
 }

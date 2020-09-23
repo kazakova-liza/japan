@@ -121,8 +121,9 @@ const main = async () => {
             }
             if (command.topic === 'period++') {
                 cache.connection.sendUTF(JSON.stringify({ topic: 'disableButtons' }));
-                cache.currentPhase = 1;
                 numberOfPeriodsToExecute = 1;
+                await execute(numberOfPeriodsToExecute, 'all');
+                cache.currentPhase = 1;
                 cache.currentPeriod++;
                 cache.connection.sendUTF(JSON.stringify({ topic: 'setToNought' }));
                 await execute(numberOfPeriodsToExecute);
