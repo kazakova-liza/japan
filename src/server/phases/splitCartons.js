@@ -28,12 +28,15 @@ const splitCartons = () => {
     }else{
         svgUpdate.push({ id: 'keyLines', value: 0}, { id: 'keyCtns', value: 0}, { id: 'keySkus', value:0}, { id: 'keyPairs', value: 0})
     }
-
-    const stats2 = groupBy(cache.activeLines, ['dte'], ['sqty'], ['carton', 'sku']);
-    svgUpdate.push({ id: 'activeLines', value: stats2[0].cnt });
-    svgUpdate.push({ id: 'activeCtns', value: stats2[0].carton_dcnt });
-    svgUpdate.push({ id: 'activeSkus', value: stats2[0].sku_dcnt });
-    svgUpdate.push({ id: 'activePairs', value: stats2[0].sqty_sum });
+    if (cache.activeLines.length > 0){
+        const stats2 = groupBy(cache.activeLines, ['dte'], ['sqty'], ['carton', 'sku']);
+        svgUpdate.push({ id: 'activeLines', value: stats2[0].cnt });
+        svgUpdate.push({ id: 'activeCtns', value: stats2[0].carton_dcnt });
+        svgUpdate.push({ id: 'activeSkus', value: stats2[0].sku_dcnt });
+        svgUpdate.push({ id: 'activePairs', value: stats2[0].sqty_sum });
+    }else{
+        svgUpdate.push({ id: 'activeLines', value: 0}, { id: 'activeCtns', value: 0}, { id: 'activeSkus', value:0}, { id: 'activePairs', value: 0})
+    }
 
     return svgUpdate;
 };

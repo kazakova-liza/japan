@@ -9,6 +9,8 @@ import invFromSlow from './phases/invfromSlow.js'
 import makeReplens from './phases/makeReplens.js'
 import assignInventory from './phases/assignInventory.js'
 import invToSlow from './phases/invToSlow.js'
+import groupBy from './utils/groupBy.js'
+import cache from './cache.js'
 
 const objects = {
     "inputs": [
@@ -26,6 +28,7 @@ const objects = {
         },
     ],
     groups: 120,
+    // periods: groupBy(cache.ords, ['dte'], [], []),
     daysbeforeArchiveToSlow: 30,
     phases: [
         {

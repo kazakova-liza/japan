@@ -103,7 +103,8 @@ const main = async () => {
                 numberOfPeriodsToExecute = 1;
                 cache.currentPhase = 1;
                 cache.currentPeriod = 0;
-                const svgUpdate = [{ id: 'phase', value: 'getting orders...' }];
+                const phase1 = objects.phases.find((phase) => phase.number === 1);
+                const svgUpdate = [{ id: 'phase', value: phase1.textOnProcessing }];
                 cache.connection.sendUTF(JSON.stringify({ topic: 'htmlUpdate', payload: svgUpdate }));
                 cache.table = command.payload.table;
                 cache.groups = command.payload.groups;
