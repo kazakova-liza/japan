@@ -31,7 +31,7 @@ const executeQuery = async (action, tableName) => {
             item.grp
           ]);
           console.log(`Writing chunk of length ${items.length}:`);
-          console.log(JSON.stringify(items))
+          // console.log(JSON.stringify(items))
           await db.query(write.replace('TABLE_NAME_PLACEHOLDER', tableName), [items]);
           console.log(`Chunk has been written`);
         }

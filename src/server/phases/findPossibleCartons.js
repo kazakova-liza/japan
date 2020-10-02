@@ -9,7 +9,7 @@ const findPossibleCartons = () => {
     cache.possibleCtnsList = possibleCtns.map((obj) => obj.carton);
     const possibleLines = cache.dayOrds.filter((f) => cache.possibleCtnsList.includes(f.carton));
     cache.possibleStyleCol = groupBy(possibleLines, ['styleCol'], ['sqty'], ['carton']);
-    console.log(cache.possibleStyleCol);
+    // console.log(cache.possibleStyleCol);
 
     svgUpdate.push({ id: 'posStyleCol', value: cache.possibleStyleCol.length });
 

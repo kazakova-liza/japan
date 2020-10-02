@@ -11,7 +11,7 @@ const affinityPrep = () => {
         return acc
     }, [])
     const ctnList = Object.keys(ctns)
-    console.log(ctnList.length);
+    // console.log(ctnList.length);
     //MAKE AFFINITY ARRAY
     cache.affAll = []
     ctnList.forEach(o1 => {

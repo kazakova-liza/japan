@@ -21,8 +21,9 @@ const assignInventory = () => {
             }
         }
     }
+    console.log(`ords3: ${JSON.stringify(ords3)}`);
 
-    cache.dataForMySql = ords3;
+    cache.dataForMySql.push(...ords3);
 
     cache.cases = cache.cases.filter(rck => { if (rck.qty > 0) { return true } else { return false } })
     let rackQtyEnd = 0

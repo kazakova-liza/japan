@@ -44,7 +44,7 @@ const affinityGroup = () => {
             const bb = grpList.includes(checkAff.ord2)
             return !(aa || bb)
         })
-        console.log(grpNum, grpList.length, cache.affAll.length)
+        // console.log(grpNum, grpList.length, cache.affAll.length)
     }
 
     cache.ords2 = cache.activeLines.map(ln => {
