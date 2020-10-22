@@ -19,10 +19,10 @@ const executeQuery = async (action, tableName) => {
         await db.query(truncate.replace('TABLE_NAME_PLACEHOLDER', tableName));
         console.log(`table truncated`);
         console.log(write.replace('TABLE_NAME_PLACEHOLDER', tableName));
-        if (tableName === ' activelines') {
+        if (tableName.trim() === 'activelines') {
           data = cache.dataForActiveLines;
         }
-        else if (tableName === ' keyorderlines') {
+        else if (tableName.trim() === 'keyorderlines') {
           data = cache.dataForKeyOrderLines;
         }
         else {
@@ -32,13 +32,14 @@ const executeQuery = async (action, tableName) => {
         const dataChunked = _.chunk(data, 10);
         for (const chunk of dataChunked) {
           let items;
-          if (tableName === ' keyorderlines' || tableName === ' activelines') {
-            items = chunk.map(item => [
-              item.dte,
-              item.carton,
-              item.sku,
-              item.qty
-            ]);
+          if (tableName.trim() === 'keyorderlines' || tableName.trim() === 'activelines') {
+            items = chunk;
+            // items = chunk.map(item => [
+            //   item.dte,
+            //   item.carton,
+            //   item.sku,
+            //   item.qty
+            // ]);
           }
           else {
             items = chunk.map(item => [

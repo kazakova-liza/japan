@@ -12,12 +12,13 @@ const splitCartons = () => {
     console.log('eligibleCartonList = ', eligibleCartonList.length);
     // get orders for these ctns
     const keyOrdLines = cache.dayOrds.filter((f) => eligibleCartonList.includes(f.carton));
+    const dataForMySQL1 = keyOrdLines.map((obj) => [obj.dte, obj.carton, obj.sku, obj.sqty]);
+    cache.dataForKeyOrderLines.push(...dataForMySQL1);
 
-    cache.dataForKeyOrderLines = keyOrdLines.map((obj) => [obj.dte, obj.carton, obj.sku, obj.sqty]);
-
-    cache.activeLines = cache.dayOrds.filter((f) => !eligibleCartonList.includes(f.carton));
+    cache.activeLines = (cache.dayOrds.filter((f) => !eligibleCartonList.includes(f.carton)));
     console.log('activeLines = ', cache.activeLines.length);
-    cache.dataForActiveLines = cache.activeLines.map((obj) => [obj.dte, obj.carton, obj.sku, obj.sqty]);
+    const dataForMySQL2 = cache.activeLines.map((obj) => [obj.dte, obj.carton, obj.sku, obj.sqty])
+    cache.dataForActiveLines.push(...dataForMySQL2);
 
     if (keyOrdLines.length > 0) {
         const stats1 = groupBy(keyOrdLines, ['dte'], ['sqty'], ['carton', 'sku']);
