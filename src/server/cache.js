@@ -12,9 +12,9 @@ const cache = {
     thisDte: undefined,
     currentPeriod: 0,
     currentPhase: 1,
-    dataForMySql: []
-
-
+    dataForMySql: [],
+    dataForKeyOrderLines: [],
+    dataForActiveLines: []
 };
 
 export default cache;

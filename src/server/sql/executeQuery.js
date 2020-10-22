@@ -14,22 +14,42 @@ const executeQuery = async (action, tableName) => {
         const records = await db.query(get.replace('TABLE_NAME_PLACEHOLDER', tableName));
         return records;
       case 'write':
+        let data;
         console.log(truncate.replace('TABLE_NAME_PLACEHOLDER', tableName));
         await db.query(truncate.replace('TABLE_NAME_PLACEHOLDER', tableName));
         console.log(`table truncated`);
         console.log(write.replace('TABLE_NAME_PLACEHOLDER', tableName));
-        console.log(cache.dataForMySql);
-        const dataChunked = _.chunk(cache.dataForMySql, 10);
-
+        if (tableName === ' activelines') {
+          data = cache.dataForActiveLines;
+        }
+        else if (tableName === ' keyorderlines') {
+          data = cache.dataForKeyOrderLines;
+        }
+        else {
+          data = cache.dataForMySql; //rename this to something more sensible
+        }
+        console.log(data);
+        const dataChunked = _.chunk(data, 10);
         for (const chunk of dataChunked) {
-          const items = chunk.map(item => [
-            item.dte,
-            item.sku,
-            item.qty,
-            item.rackNum,
-            item.carton,
-            item.grp
-          ]);
+          let items;
+          if (tableName === ' keyorderlines' || tableName === ' activelines') {
+            items = chunk.map(item => [
+              item.dte,
+              item.carton,
+              item.sku,
+              item.qty
+            ]);
+          }
+          else {
+            items = chunk.map(item => [
+              item.dte,
+              item.sku,
+              item.qty,
+              item.rackNum,
+              item.carton,
+              item.grp
+            ]);
+          }
           console.log(`Writing chunk of length ${items.length}:`);
           // console.log(JSON.stringify(items))
           await db.query(write.replace('TABLE_NAME_PLACEHOLDER', tableName), [items]);
