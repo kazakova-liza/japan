@@ -2,7 +2,7 @@ install:
 	npm install
 
 server:
-	node src/server/runServer.js
+	node src/server/server.js
 
 publish:
 	npm publish --dry-run

@@ -3,17 +3,6 @@ import cache from './cache.js';
 import objects from './objects.js'
 
 
-cache.cases = [];
-cache.slowPairs = [];
-
-const blankOne = () => {
-    const svgUpdate = [];
-
-    svgUpdate.push({ id: 'zzzzz', value: 999 });
-
-    return svgUpdate;
-}
-
 const execute = async (numberOfPeriodsToExecute, phase = cache.currentPhase) => {
     const t1 = Date.now();
     const dtes = groupBy(cache.ords, ['dte'], [], []);
@@ -51,7 +40,7 @@ const execute = async (numberOfPeriodsToExecute, phase = cache.currentPhase) => 
                     topic: 'svgUpdate',
                     payload: {
                         id: el.svgTransitionElementId,
-                        color: "#bfbfbf"
+                        color: "#605F5F"
                     }
                 }));
                 cache.connection.sendUTF(JSON.stringify({ topic: 'svgUpdate', payload: el.svgTransitionElementId }));
@@ -94,13 +83,13 @@ const execute = async (numberOfPeriodsToExecute, phase = cache.currentPhase) => 
                 topic: 'svgUpdate',
                 payload: {
                     id: currentPhase.svgTransitionElementId,
-                    color: "#bfbfbf"
+                    color: "#605F5F"
                 }
             }));
             cache.connection.sendUTF(JSON.stringify({ topic: 'variablesUpdate', payload: svgUpdate }));
         }
         if (i !== cache.currentPeriod + parseInt(numberOfPeriodsToExecute) - 1) {
-            cache.connection.sendUTF(JSON.stringify({ topic: 'setToNought' }));
+            cache.connection.sendUTF(JSON.stringify({ topic: 'setToDashes' }));
         }
     }
     const t2 = Date.now();

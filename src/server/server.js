@@ -1,57 +1,9 @@
-import http from 'http';
-import url from 'url';
-import fs from 'fs';
-import path from 'path';
-import websocket from 'websocket';
+import runWebSocketServer from './webSocket.js'
 import objects from './objects.js';
 import executeQuery from './sql/executeQuery.js';
 import execute from './execute.js';
 import cache from './cache.js';
 
-const port = 50002;
-const baseDirectory = path.resolve();
-
-const runHttpServer = () => {
-    const server = http.createServer((request, response) => {
-        try {
-            const requestUrl = url.parse(request.url);
-            let normalizedPath = path.normalize(requestUrl.pathname);
-            //  if (normalizedPath.includes('index.html') || normalizedPath === '\\') {
-            //      normalizedPath = '//src//client//index.html';
-            //  }
-            if (normalizedPath.includes('index.html') || normalizedPath === '/') {
-                normalizedPath = '/src/client/index.html';
-            }
-            if (normalizedPath.includes('.svg')) {
-                response.setHeader('Content-Type', 'image/svg+xml');
-            }
-            const fsPath = `${baseDirectory}${normalizedPath}`;
-            const fileStream = fs.createReadStream(fsPath);
-            fileStream.pipe(response);
-            fileStream.on('open', () => {
-                response.writeHead(200);
-            });
-            fileStream.on('error', (e) => {
-                response.writeHead(404); // assume the file doesn't exist
-                response.end();
-            });
-        } catch (e) {
-            response.writeHead(500);
-            response.end(); // end the response so browsers don't hang
-
-        }
-    }).listen(port);
-    console.log(`listening on port ${port}`);
-    return server;
-};
-
-const runWebSocketServer = () => {
-    const server = runHttpServer();
-    const wsServer = new websocket.server({
-        httpServer: server,
-    });
-    return wsServer;
-};
 
 
 const main = async () => {
@@ -82,7 +34,10 @@ const main = async () => {
             }
             // if (command.topic === 'stop') { }
             if (command.topic === 'inputs') {
-                cache.connection.sendUTF(JSON.stringify({ topic: 'inputs', payload: objects.inputs }));
+                cache.connection.sendUTF(JSON.stringify({
+                    topic: 'inputs',
+                    payload: objects.inputs
+                }));
             }
             if (command.topic === 'jump') {
                 cache.connection.sendUTF(JSON.stringify({ topic: 'disableButtons' }));
@@ -103,11 +58,10 @@ const main = async () => {
                 cache.currentPeriod = 0;
                 const phase1 = objects.phases.find((phase) => phase.number === 1);
                 const svgUpdate = [{ id: 'phase', value: phase1.textOnProcessing }];
-                cache.connection.sendUTF(JSON.stringify({ topic: 'htmlUpdate', payload: svgUpdate }));
-                cache.table = command.payload.table;
-                cache.groups = command.payload.groups;
-                cache.daysbeforeArchiveToSlow = command.payload.moveToSlow;
-                cache.ords = await executeQuery('getData', cache.table);
+                cache.connection.sendUTF(JSON.stringify({
+                    topic: 'htmlUpdate',
+                    payload: svgUpdate
+                }));
                 await execute(numberOfPeriodsToExecute);
                 cache.connection.sendUTF(JSON.stringify({ topic: 'enableButtons' }));
             }

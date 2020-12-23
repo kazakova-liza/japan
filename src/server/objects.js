@@ -1,126 +1,62 @@
-import getOrders from './phases/getOrders.js'
-import findPossibleCartons from './phases/findPossibleCartons.js'
-import listEligibleStyleColor from './phases/listEligibleStyleColor.js'
-import splitCartons from './phases/splitCartons.js'
-import affinityPrep from './phases/affinityPrep.js'
-import affinityGroup from './phases/affinityGroup.js'
-import getInventory from './phases/getInventory.js'
-import invFromSlow from './phases/invfromSlow.js'
-import makeReplens from './phases/makeReplens.js'
-import assignInventory from './phases/assignInventory.js'
-import invToSlow from './phases/invToSlow.js'
+import splitShipments from './phases/splitShipments.js'
+import unloadShipments from './phases/unloadShipments.js'
+import oldNew from './phases/oldNew.js'
+import splitOrders from './phases/splitOrders.js'
+import processWaves from './phases/processWaves.js'
 import groupBy from './utils/groupBy.js'
 import cache from './cache.js'
 
 const objects = {
     "inputs": [
-        {
-            "name": "Orders table",
-            "type": "text"
-        },
-        {
-            "name": "Groups",
-            "type": "text"
-        },
-        {
-            "name": "Move to slow",
-            "type": "text"
-        },
+        // {
+        //     "name": "input-table",
+        //     "type": "text"
+        // },
     ],
-    groups: 120,
     // periods: groupBy(cache.ords, ['dte'], [], []),
-    daysbeforeArchiveToSlow: 30,
     phases: [
         {
             number: 1,
-            name: 'getOrders',
-            function: getOrders,
-            textOnProcessing: "getting orders",
-            textOnCompletion: "got orders",
+            name: 'splitShipments',
+            function: splitShipments,
+            textOnProcessing: "splitting shipments",
+            textOnCompletion: "split shipments",
             async: true,
             svgTransitionElementId: undefined,
 
         },
         {
             number: 2,
-            name: 'findPossibleCartons',
-            function: findPossibleCartons,
-            textOnProcessing: "finding possible cartons",
-            textOnCompletion: "found possible cartons",
-            svgTransitionElementId: 'svg_18',
+            name: 'unloadShipments',
+            function: unloadShipments,
+            textOnProcessing: "unloading shipments",
+            textOnCompletion: "unloaded shipments",
+            svgTransitionElementId: 'arrow_1_2',
         },
         {
             number: 3,
-            name: 'listEligibleStyleColor',
-            function: listEligibleStyleColor,
-            textOnProcessing: "finding eligible style/colors",
-            textOnCompletion: "found eligible style/colors",
-            svgTransitionElementId: 'svg_32',
+            name: 'oldNew',
+            function: oldNew,
+            textOnProcessing: "change text here",
+            textOnCompletion: "change text here",
+            svgTransitionElementId: 'arrow_2_3',
         },
         {
             number: 4,
-            name: splitCartons,
-            function: splitCartons,
-            textOnProcessing: "splitting cartons",
-            textOnCompletion: "split cartons",
-            svgTransitionElementId: 'svg_41',
+            name: 'splitOrders',
+            function: splitOrders,
+            textOnProcessing: "splitting orders",
+            textOnCompletion: "split orders",
+            svgTransitionElementId: 'arrow_4_5',
         },
         {
             number: 5,
-            name: affinityPrep,
-            function: affinityPrep,
-            textOnProcessing: "creating affinity matrix",
-            textOnCompletion: "affinity martrix ready",
-            svgTransitionElementId: 'svg_73',
+            name: 'processWaves',
+            function: processWaves,
+            textOnProcessing: "processing waves",
+            textOnCompletion: "processed waves",
+            svgTransitionElementId: 'arrow_5_6',
         },
-        {
-            number: 6,
-            name: affinityGroup,
-            function: affinityGroup,
-            textOnProcessing: "creating affinity groups",
-            textOnCompletion: "affinity groups ready",
-            svgTransitionElementId: 'svg_20',
-        },
-        {
-            number: 7,
-            name: getInventory,
-            function: getInventory,
-            textOnProcessing: "getting current inventory",
-            textOnCompletion: "got current inventory",
-            svgTransitionElementId: 'svg_42',
-        },
-        {
-            number: 8,
-            name: invFromSlow,
-            function: invFromSlow,
-            textOnProcessing: "getting inventory from slow",
-            textOnCompletion: "got inventory from slow",
-            svgTransitionElementId: 'svg_75',
-        },
-        {
-            number: 9,
-            name: makeReplens,
-            function: makeReplens,
-            textOnProcessing: "calculating what needs replenishment",
-            textOnCompletion: "calculated what needs replenishment",
-            svgTransitionElementId: 'svg_82',
-        },
-        {
-            number: 10,
-            name: assignInventory,
-            function: assignInventory,
-            textOnProcessing: "assigning inventory for cartons",
-            textOnCompletion: "assigned inventory for cartons",
-            svgTransitionElementId: 'svg_85',
-        },
-        {
-            number: 11,
-            name: invToSlow,
-            function: invToSlow,
-            textOnProcessing: "putting slow inventory away",
-            textOnCompletion: "put slow inventory away",
-            svgTransitionElementId: 'svg_105',
-        }
     ]
 }
 
