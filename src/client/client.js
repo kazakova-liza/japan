@@ -19,9 +19,8 @@ const dumpButton = document.getElementById('dump');
 const executeButton = document.getElementById('execute');
 const svgElement = document.getElementById('svg1');
 const tableElement = document.getElementById('table');
-const svgDoc = svgElement.contentDocument;
 
-const disabledState = state = {
+const disabledState = {
     startButton: {
         id: startButton,
         class: 'button',
@@ -54,7 +53,7 @@ const disabledState = state = {
     }
 };
 
-const enabledState = state = {
+const enabledState = {
     startButton: {
         id: startButton,
         class: 'button',
@@ -124,6 +123,7 @@ ws.onopen = () => {
 };
 
 ws.onmessage = (e) => {
+    const svgDoc = svgElement.contentDocument;
     const message = JSON.parse(e.data);
     if (message.topic === 'inputs') {
         let html = '';

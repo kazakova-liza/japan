@@ -5,19 +5,20 @@ import objects from './objects.js'
 
 const execute = async (numberOfPeriodsToExecute, phase = cache.currentPhase) => {
     const t1 = Date.now();
-    const dtes = groupBy(cache.ords, ['dte'], [], []);
+    const dtes = groupBy(cache.receivingTable, ['date'], [], []);
+    // console.log(dtes);
     console.log('dtes = ', dtes.length);
-    dtes.sort((a, b) => a.dte.getTime() - b.dte.getTime());
+    dtes.sort((a, b) => a.date - b.date);
 
     for (let i = cache.currentPeriod; i < cache.currentPeriod + parseInt(numberOfPeriodsToExecute); i++) {
-        cache.thisDte = dtes[i].dte;
+        cache.thisDte = dtes[i];
         let svgUpdate;
         cache.connection.sendUTF(JSON.stringify({
             topic: 'htmlUpdate',
             payload:
                 [{
                     id: 'period',
-                    value: dtes[i].dte.toDateString()
+                    value: dtes[i].date
                 }]
         }));
         if (phase === 'all') {

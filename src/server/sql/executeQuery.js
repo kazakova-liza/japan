@@ -1,61 +1,42 @@
-import connectToDatabase from './workWithSQL.js'
+import connect from './connect.js'
 import _ from 'lodash'
-import cache from '../cache.js'
-import { get, truncate, write } from './queries.js'
+import { get, write, truncateTable } from './queries.js'
 
 
-const executeQuery = async (action, tableName) => {
-  const db = connectToDatabase();
+const executeQuery = async (action, query = undefined, name = undefined, data = undefined, fields = undefined, truncate = false) => {
+  const db = connect();
+  let records;
 
   try {
     switch (action) {
-      case 'getData':
+      case 'runQuery':
+        console.log(query);
+        records = await db.query(query.replace('TABLE_NAME_PLACEHOLDER', name));
+        return records;
+      case 'savedQuery':
+        const sql = await db.query(name);
+        return sql;
+      case 'readTable':
         console.log(get);
-        const records = await db.query(get.replace('TABLE_NAME_PLACEHOLDER', tableName));
+        records = await db.query(get.replace('TABLE_NAME_PLACEHOLDER', name));
         return records;
       case 'write':
-        let data;
-        console.log(truncate.replace('TABLE_NAME_PLACEHOLDER', tableName));
-        await db.query(truncate.replace('TABLE_NAME_PLACEHOLDER', tableName));
-        console.log(`table truncated`);
-        console.log(write.replace('TABLE_NAME_PLACEHOLDER', tableName));
-        if (tableName.trim() === 'activelines') {
-          data = cache.dataForActiveLines;
+        if (truncate === true) {
+          console.log(truncateTable.replace('TABLE_NAME_PLACEHOLDER', name));
+          await db.query(truncateTable.replace('TABLE_NAME_PLACEHOLDER', name));
+          console.log(`table truncated`);
         }
-        else if (tableName.trim() === 'keyorderlines') {
-          data = cache.dataForKeyOrderLines;
-        }
-        else {
-          data = cache.dataForMySql; //rename this to something more sensible
-        }
-        console.log(data);
-        const dataChunked = _.chunk(data, 10);
+        const dataChunked = _.chunk(data, 10000);
+        const query1 = write.replace('TABLE_NAME_PLACEHOLDER', name)
+          .replace('FIELDS_NAMES_PLACEHOLDER', fields);
+        console.log(query1);
+
         for (const chunk of dataChunked) {
-          let items;
-          if (tableName.trim() === 'keyorderlines' || tableName.trim() === 'activelines') {
-            items = chunk;
-            // items = chunk.map(item => [
-            //   item.dte,
-            //   item.carton,
-            //   item.sku,
-            //   item.qty
-            // ]);
-          }
-          else {
-            items = chunk.map(item => [
-              item.dte,
-              item.sku,
-              item.qty,
-              item.rackNum,
-              item.carton,
-              item.grp
-            ]);
-          }
-          console.log(`Writing chunk of length ${items.length}:`);
-          // console.log(JSON.stringify(items))
-          await db.query(write.replace('TABLE_NAME_PLACEHOLDER', tableName), [items]);
+          console.log(`chunk #${dataChunked.indexOf(chunk)}`)
+          await db.query(query1, [chunk]);
           console.log(`Chunk has been written`);
         }
+        console.log(`All chunks had been written`);
         break;
     }
   } catch (error) {
@@ -64,5 +45,6 @@ const executeQuery = async (action, tableName) => {
     // await db.close();
   }
 };
+
 
 export default executeQuery;

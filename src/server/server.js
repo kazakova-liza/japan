@@ -5,7 +5,6 @@ import execute from './execute.js';
 import cache from './cache.js';
 
 
-
 const main = async () => {
     const wsServer = runWebSocketServer();
 
@@ -56,6 +55,7 @@ const main = async () => {
                 numberOfPeriodsToExecute = 1;
                 cache.currentPhase = 1;
                 cache.currentPeriod = 0;
+                cache.receivingTable = await executeQuery('readTable', undefined, 'in_caseType');
                 const phase1 = objects.phases.find((phase) => phase.number === 1);
                 const svgUpdate = [{ id: 'phase', value: phase1.textOnProcessing }];
                 cache.connection.sendUTF(JSON.stringify({
