@@ -147,7 +147,15 @@ ws.onmessage = (e) => {
     if (message.topic == 'variablesUpdate') {
         console.log(message);
         for (const element of message.payload) {
-            svgDoc.getElementById(element.id).textContent = element.value;
+            const el = svgDoc.getElementById(element.id);
+            if (el.getElementsByTagName('tspan') !== undefined) {
+                const tspans = el.getElementsByTagName('tspan');
+                tspans[0].textContent = element.value;
+            }
+            else {
+                svgDoc.getElementById(element.id).textContent = element.value;
+            }
+
             const currentDate = document.getElementById('period').textContent;
             if (dataForTable.length === 0) {
                 dataForTable.push({

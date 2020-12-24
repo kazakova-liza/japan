@@ -39,6 +39,7 @@ const objects = {
             function: splitOrders,
             textOnProcessing: "splitting orders",
             textOnCompletion: "split orders",
+            async: true,
             svgTransitionElementId: 'arrow_4_5',
         },
         {

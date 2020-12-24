@@ -5,7 +5,7 @@ import executeQuery from '../sql/executeQuery.js'
 
 const splitShipments = async () => {
     if (cache.receivingTable === undefined) {
-        cache.receivingTable = await executeQuery(readTable, undefined, 'in_caseType');
+        cache.receivingTable = await executeQuery('readTable', undefined, 'in_caseType');
         console.log(cache.receivingTable[0]);
         console.log(`Table in_caseType has been read`);
     }
