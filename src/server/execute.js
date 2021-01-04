@@ -7,7 +7,7 @@ const execute = async (numberOfPeriodsToExecute, phase = cache.currentPhase) => 
     const t1 = Date.now();
     const dtes = groupBy(cache.receivingTable, ['date'], [], []);
     // console.log(dtes);
-    console.log('dtes = ', dtes.length);
+    //console.log('dtes = ', dtes.length);
     dtes.sort((a, b) => a.date - b.date);
 
     for (let i = cache.currentPeriod; i < cache.currentPeriod + parseInt(numberOfPeriodsToExecute); i++) {
@@ -95,7 +95,7 @@ const execute = async (numberOfPeriodsToExecute, phase = cache.currentPhase) => 
     }
     const t2 = Date.now();
 
-    console.log(t2 - t1);
+    //console.log(t2 - t1);
 }
 
 export default execute;

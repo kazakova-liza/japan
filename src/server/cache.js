@@ -1,4 +1,5 @@
 const cache = {
+    needInv :[],
     receivingTable: undefined,
     ordersTable: undefined,
     currentPeriod: 0,

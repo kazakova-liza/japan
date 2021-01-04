@@ -3,6 +3,8 @@ import objects from './objects.js';
 import executeQuery from './sql/executeQuery.js';
 import execute from './execute.js';
 import cache from './cache.js';
+import invClass from './phases/inv.js'
+import init from './phases/init.js'
 
 
 const main = async () => {
@@ -55,9 +57,12 @@ const main = async () => {
                 numberOfPeriodsToExecute = 1;
                 cache.currentPhase = 1;
                 cache.currentPeriod = 0;
-                cache.receivingTable = await executeQuery('readTable', undefined, 'in_caseType');
+                cache.receivingTable = await executeQuery('readTable', undefined, 'in_pallets_mar');
                 const phase1 = objects.phases.find((phase) => phase.number === 1);
                 const svgUpdate = [{ id: 'phase', value: phase1.textOnProcessing }];
+
+                await init()
+
                 cache.connection.sendUTF(JSON.stringify({
                     topic: 'htmlUpdate',
                     payload: svgUpdate
@@ -89,7 +94,7 @@ const main = async () => {
                 cache.connection.sendUTF(JSON.stringify({ topic: 'enableButtons' }));
             }
             if (command.topic === 'dump') {
-                await executeQuery('write', command.payload);
+                await executeQuery('write', null, command.payload, cache.needInv.map( Object.values ), 'sku,qty,standardCaseQty');
             }
         });
 
