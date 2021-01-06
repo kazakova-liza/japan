@@ -21,7 +21,8 @@
     "homebrew": "^0.1.0",
     "mysql": "github:mysqljs/mysql",
     "util": "^0.12.3",
-    "websocket": "^1.0.32"
+    "websocket": "^1.0.32",
+    "yarn": "^1.22.10"
   },
   "devDependencies": {},
   "scripts": {

@@ -4,7 +4,7 @@ import fs from 'fs';
 import path from 'path';
 
 
-const port = 50006;
+const port = 50007;
 const baseDirectory = path.resolve();
 
 const runHttpServer = () => {

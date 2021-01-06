@@ -3,8 +3,7 @@ import objects from './objects.js';
 import executeQuery from './sql/executeQuery.js';
 import execute from './execute.js';
 import cache from './cache.js';
-import invClass from './phases/inv.js'
-import init from './phases/init.js'
+
 
 
 const main = async () => {
@@ -94,7 +93,7 @@ const main = async () => {
                 cache.connection.sendUTF(JSON.stringify({ topic: 'enableButtons' }));
             }
             if (command.topic === 'dump') {
-                await executeQuery('write', null, command.payload, cache.needInv.map( Object.values ), 'sku,qty,standardCaseQty');
+                await executeQuery('write', null, command.payload, cache.needInv.map(Object.values), 'sku,qty,standardCaseQty');
             }
         });
 

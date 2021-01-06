@@ -19,6 +19,7 @@ const dumpButton = document.getElementById('dump');
 const executeButton = document.getElementById('execute');
 const svgElement = document.getElementById('svg1');
 const tableElement = document.getElementById('table');
+const flowChartElement = document.getElementById('flowChart');
 
 const disabledState = {
     startButton: {
@@ -86,6 +87,50 @@ const enabledState = {
     }
 };
 
+const flowChart =
+    `graph LR
+    subgraph Dock
+    Unload(Unload <BR>100 containers)
+    Mixed_SKU_Pallet[300 cases on to <BR>mixed SKU pallets]
+    Single_SKU_Pallet[200 cases on to <BR>single SKU Pallet]
+    Unload-->Single_SKU_Pallet
+    Unload-->Mixed_SKU_Pallet
+    end
+    subgraph PalletPackTop
+    Retrieve
+    Putaway
+    end
+    subgraph PalletRackMiddle
+    Rack
+    end
+    subgraph Active
+    PickStation
+    Robots
+    Replenish
+    end
+    subgraph Finish
+    KEY
+    VAS
+    end
+    subgraph Loading
+    Hold--->Load
+    end
+    Single_SKU_Pallet-->|400 pallets|Putaway
+    Retrieve-->|600 pallets|Replenish
+    Mixed_SKU_Pallet-->|500 pallets|Replenish
+    Retrieve-->|700 pallets|KEY
+    PickStation-->KEY
+    VAS-->Hold
+    Rack-->Replenish
+    Retrieve-->|Non peak|Rack`;
+
+const insertFlowChart = (flowChart) => {
+    flowChartElement.innerHTML = flowChart;
+};
+
+const graph = mermaid.mermaidAPI.render('graphDiv', flowChart, insertFlowChart);
+
+
 const json2Table = (json) => {
     //https://dev.to/boxofcereal/how-to-generate-a-table-from-json-data-with-es6-methods-2eel
     let cols = Object.keys(json[0]);
@@ -113,7 +158,7 @@ const json2Table = (json) => {
     return table;
 }
 
-const ws = new WebSocket('ws://localhost:50006/');
+const ws = new WebSocket('ws://localhost:50007/');
 ws.onopen = () => {
     console.log('WebSocket Client Connected');
     const command = {
