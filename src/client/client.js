@@ -87,48 +87,10 @@ const enabledState = {
     }
 };
 
-const flowChart =
-    `graph LR
-    subgraph Dock
-    Unload(Unload <BR>100 containers)
-    Mixed_SKU_Pallet[300 cases on to <BR>mixed SKU pallets]
-    Single_SKU_Pallet[200 cases on to <BR>single SKU Pallet]
-    Unload-->Single_SKU_Pallet
-    Unload-->Mixed_SKU_Pallet
-    end
-    subgraph PalletPackTop
-    Retrieve
-    Putaway
-    end
-    subgraph PalletRackMiddle
-    Rack
-    end
-    subgraph Active
-    PickStation
-    Robots
-    Replenish
-    end
-    subgraph Finish
-    KEY
-    VAS
-    end
-    subgraph Loading
-    Hold--->Load
-    end
-    Single_SKU_Pallet-->|400 pallets|Putaway
-    Retrieve-->|600 pallets|Replenish
-    Mixed_SKU_Pallet-->|500 pallets|Replenish
-    Retrieve-->|700 pallets|KEY
-    PickStation-->KEY
-    VAS-->Hold
-    Rack-->Replenish
-    Retrieve-->|Non peak|Rack`;
 
 const insertFlowChart = (flowChart) => {
     flowChartElement.innerHTML = flowChart;
 };
-
-const graph = mermaid.mermaidAPI.render('graphDiv', flowChart, insertFlowChart);
 
 
 const json2Table = (json) => {
@@ -168,7 +130,7 @@ ws.onopen = () => {
 };
 
 ws.onmessage = (e) => {
-    const svgDoc = svgElement.contentDocument;
+    // const svgDoc = svgElement.contentDocument;
     const message = JSON.parse(e.data);
     if (message.topic === 'inputs') {
         let html = '';
@@ -184,57 +146,64 @@ ws.onmessage = (e) => {
     if (message.topic == 'disableButtons') {
         render(disabledState);
     }
-
     if (message.topic == 'enableButtons') {
         render(enabledState);
     }
 
-    if (message.topic == 'variablesUpdate') {
+    if (message.topic == 'flowChartUpdate') {
         console.log(message);
         for (const element of message.payload) {
-            const el = svgDoc.getElementById(element.id);
-            if (el.getElementsByTagName('tspan') !== undefined) {
-                const tspans = el.getElementsByTagName('tspan');
-                tspans[0].textContent = element.value;
-            }
-            else {
-                svgDoc.getElementById(element.id).textContent = element.value;
-            }
-
-            const currentDate = document.getElementById('period').textContent;
-            if (dataForTable.length === 0) {
-                dataForTable.push({
-                    name: element.id,
-                    [currentDate]: element.value
-                })
-            }
-            for (let i = 0; i < dataForTable.length; i++) {
-                if (dataForTable[i].name === element.id) {
-                    if (!dataForTable[i].hasOwnProperty(currentDate)) {
-                        dataForTable[i][currentDate] = element.value;
-                    }
-                    break;
-                }
-                if (i === dataForTable.length - 1 && dataForTable[i].name !== element.id) {
-                    dataForTable.push({
-                        name: element.id,
-                        [currentDate]: element.value
-                    })
-                }
-            }
-            tableElement.innerHTML = json2Table(dataForTable);
+            mermaid.mermaidAPI.render('graphDiv', element.value, insertFlowChart);
         }
+
     }
 
-    if (message.topic == 'setToDashes') {
-        console.log(message);
-        const variables = svgDoc.getElementsByClassName('variables');
-        for (const element of variables) {
-            element.textContent = '-';
-        }
-        console.log(`data for table: ${dataForTable}`);
-        tableElement.innerHTML = json2Table(dataForTable);
-    }
+    // if (message.topic == 'variablesUpdate') {
+    //     console.log(message);
+    //     for (const element of message.payload) {
+    //         const el = svgDoc.getElementById(element.id);
+    //         if (el.getElementsByTagName('tspan') !== undefined) {
+    //             const tspans = el.getElementsByTagName('tspan');
+    //             tspans[0].textContent = element.value;
+    //         }
+    //         else {
+    //             svgDoc.getElementById(element.id).textContent = element.value;
+    //         }
+
+    //         const currentDate = document.getElementById('period').textContent;
+    //         if (dataForTable.length === 0) {
+    //             dataForTable.push({
+    //                 name: element.id,
+    //                 [currentDate]: element.value
+    //             })
+    //         }
+    //         for (let i = 0; i < dataForTable.length; i++) {
+    //             if (dataForTable[i].name === element.id) {
+    //                 if (!dataForTable[i].hasOwnProperty(currentDate)) {
+    //                     dataForTable[i][currentDate] = element.value;
+    //                 }
+    //                 break;
+    //             }
+    //             if (i === dataForTable.length - 1 && dataForTable[i].name !== element.id) {
+    //                 dataForTable.push({
+    //                     name: element.id,
+    //                     [currentDate]: element.value
+    //                 })
+    //             }
+    //         }
+    //         tableElement.innerHTML = json2Table(dataForTable);
+    //     }
+    // }
+
+    // if (message.topic == 'setToDashes') {
+    //     console.log(message);
+    //     const variables = svgDoc.getElementsByClassName('variables');
+    //     for (const element of variables) {
+    //         element.textContent = '-';
+    //     }
+    //     console.log(`data for table: ${dataForTable}`);
+    //     tableElement.innerHTML = json2Table(dataForTable);
+    // }
 
     if (message.topic == 'htmlUpdate') {
         console.log(message);
@@ -243,11 +212,11 @@ ws.onmessage = (e) => {
         }
     }
 
-    if (message.topic === 'svgUpdate') {
-        console.log(message);
-        const elementToUpdate = svgDoc.getElementById(message.payload.id);
-        elementToUpdate.style.fill = message.payload.color;
-    }
+    // if (message.topic === 'svgUpdate') {
+    //     console.log(message);
+    //     const elementToUpdate = svgDoc.getElementById(message.payload.id);
+    //     elementToUpdate.style.fill = message.payload.color;
+    // }
 };
 
 

@@ -5,14 +5,12 @@ import objects from './objects.js'
 
 const execute = async (numberOfPeriodsToExecute, phase = cache.currentPhase) => {
     const t1 = Date.now();
-    const dtes = groupBy(cache.receivingTable, ['date'], [], []);
-    // console.log(dtes);
-    //console.log('dtes = ', dtes.length);
-    dtes.sort((a, b) => a.date - b.date);
+    const dtes = objects.periods;
 
     for (let i = cache.currentPeriod; i < cache.currentPeriod + parseInt(numberOfPeriodsToExecute); i++) {
         cache.thisDte = dtes[i];
         let svgUpdate;
+        let flowChartUpdate;
         cache.connection.sendUTF(JSON.stringify({
             topic: 'htmlUpdate',
             payload:
@@ -72,6 +70,12 @@ const execute = async (numberOfPeriodsToExecute, phase = cache.currentPhase) => 
             else {
                 svgUpdate = currentPhase.function();
             }
+            if (currentPhase.async !== undefined) {
+                flowChartUpdate = await currentPhase.function();
+            }
+            else {
+                flowChartUpdate = currentPhase.function();
+            }
             cache.connection.sendUTF(JSON.stringify({
                 topic: 'htmlUpdate',
                 payload:
@@ -80,14 +84,21 @@ const execute = async (numberOfPeriodsToExecute, phase = cache.currentPhase) => 
                         value: currentPhase.textOnCompletion
                     }]
             }));
+            // cache.connection.sendUTF(JSON.stringify({
+            //     topic: 'svgUpdate',
+            //     payload: {
+            //         id: currentPhase.svgTransitionElementId,
+            //         color: "#605F5F"
+            //     }
+            // }));
             cache.connection.sendUTF(JSON.stringify({
-                topic: 'svgUpdate',
-                payload: {
-                    id: currentPhase.svgTransitionElementId,
-                    color: "#605F5F"
-                }
+                topic: 'flowChartUpdate',
+                payload: flowChartUpdate
             }));
-            cache.connection.sendUTF(JSON.stringify({ topic: 'variablesUpdate', payload: svgUpdate }));
+            // cache.connection.sendUTF(JSON.stringify({
+            //     topic: 'variablesUpdate',
+            //     payload: svgUpdate
+            // }));
         }
         if (i !== cache.currentPeriod + parseInt(numberOfPeriodsToExecute) - 1) {
             cache.connection.sendUTF(JSON.stringify({ topic: 'setToDashes' }));
