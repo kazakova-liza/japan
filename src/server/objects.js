@@ -31,6 +31,7 @@ const objects = {
     CurPandHoldPallets : 950,
     periods: [1, 2, 3, 4, 5, 6, 7],
     flowChart: `flowchart LR
+    title1{{"3 X Growth -- Hourly (20 hours)"}}
     subgraph Dock
     Unload("Unload {D1} <BR>{containersUnload} containers")
     Mixed_SKU_Pallet[max {maxCasesUnloadMixed} cases<BR>avg {avgCasesUnloadMixed} cases<BR>on to mixed SKU pallets]
@@ -67,7 +68,9 @@ const objects = {
     Retrieve-->|"{[fcaTxt1] D6 + D5 - D3}<BR>max {maxPalletsReplenActive} pallets<BR>avg {avgPalletsReplenActive} pallets"|Replenish
 
     Mixed_SKU_Pallet-->|"{D3}<BR>max {maxPalletsUnloadMixed} pallets<BR>avg {avgPalletsUnloadMixed} pallets"|Replenish
-    Retrieve-->|"{[fcaTxtNot] {D6}<BR>max {maxFCCasePalletToFinish} cartons<BR>avg {avgFCCasePalletToFinish} cartons"|Finish
+
+    Retrieve-->|"{[fcaTxtNot] {D6}<BR>max {maxFCCasePalletToFinish} cartons {maxFCPalletPalletToFinish} pallets<BR>avg {avgFCCasePalletToFinish} cartons {avgFCPalletPalletToFinish} pallets"|Finish
+    
     FullCasePick-->|"{[fcaTxt2] {D6}<BR>max {maxFCCaseActiveToFinish} cartons<BR>avg {avgFCCaseActiveToFinish} cartons"|Finish
     PickStation-->|"{D5}<BR>max {maxCartonsPicked} cartons<BR>avg {avgCartonsPicked} cartons"|Finish
     Finish-->|"{D8}<BR>max {maxShipCartons} cartons<BR>max {maxShipPallets} pallets<BR>avg {avgShipCartons} cartons<BR>avg {avgShipPallets} pallets"|Hold`

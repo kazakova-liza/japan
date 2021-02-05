@@ -48,6 +48,10 @@ const process = async () => {
     const data6 = await executeQuery('runQuery', query6);
     replacers.maxFCCasePalletToFinish = Math.ceil(data6[0].maxCartons * (1 - objects.pcentFullCaseFromActive))
     replacers.avgFCCasePalletToFinish = Math.ceil(data6[0].avgCartons * (1 - objects.pcentFullCaseFromActive))
+
+    replacers.maxFCPalletPalletToFinish = replacers.maxFCCasePalletToFinish / objects.casesPerPalletOutbound
+    replacers.avgFCPalletPalletToFinish = replacers.avgFCCasePalletToFinish / objects.casesPerPalletOutbound
+
     replacers.maxFCCaseActiveToFinish = Math.ceil(data6[0].maxCartons * objects.pcentFullCaseFromActive)
     replacers.avgFCCaseActiveToFinish = Math.ceil(data6[0].avgCartons * objects.pcentFullCaseFromActive)
 
